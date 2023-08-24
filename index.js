@@ -16,7 +16,7 @@ const salt = bcrypt.genSaltSync(10);
 
 main().catch(err => console.log("db not connected"));
 async function main() {
-    mongoose.connect("mongodb+srv://Venkateshwar:Venka12345@cluster0.jf50lwh.mongodb.net/blog-website?retryWrites=true&w=majority");
+    mongoose.connect(process.env.MONGODB_URL);
     console.log("db connected");
 }
 
@@ -111,7 +111,8 @@ app.get("/post/:id" ,async(req ,res) => {
     const postDoc = await Post.findById({_id : id.id}).populate("author" , ['username']);
     res.json(postDoc);
 })
-app.listen(8080 ,() => {
+const port = process.env.PORT || 8080;
+app.listen(port ,() => {
     console.log("server has been started.");
 });
 
