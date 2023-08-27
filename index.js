@@ -24,6 +24,7 @@ async function main() {
 app.use(cors({
     origin : process.env.FRONT,
     credentials : true,
+    methods : ['GET','POST','PUT'],
 }));
 
 app.use(express.json());
