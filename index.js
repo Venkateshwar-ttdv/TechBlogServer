@@ -20,6 +20,7 @@ async function main() {
     console.log("db connected");
 }
 app.use(cookieSession({
+    keys : ["key1"],
     sameSite : "none",
     secure : true
 }));
