@@ -112,26 +112,26 @@ app.get("/post/:id" ,async(req ,res) => {
     res.json(postDoc);
 })
 
-app.put("/post" ,uploadMiddleware.single("file"),async(req ,res) => {
-    const {originalname ,path} = req.file;
-    const parts = originalname.split('.');
-    const ext = parts[parts.length - 1];
-    const newPath = path+'.'+ext;
-    fs.renameSync(path ,newPath);
+// app.put("/post" ,uploadMiddleware.single("file"),async(req ,res) => {
+//     const {originalname ,path} = req.file;
+//     const parts = originalname.split('.');
+//     const ext = parts[parts.length - 1];
+//     const newPath = path+'.'+ext;
+//     fs.renameSync(path ,newPath);
 
-    const {token} = req.cookies;
-    jwt.verify(token ,secret ,{} ,async(err ,info) => {
-        if(err) throw err;
-        const {id ,title ,summary ,content} = req.body;
-        await Post.findByIdAndUpdate({_id : id} ,{
-            title ,
-            summary ,
-            content ,
-            cover: newPath 
-        },{upsert : true})
-        res.json(info);
-    });    
-})
+//     const {token} = req.cookies;
+//     jwt.verify(token ,secret ,{} ,async(err ,info) => {
+//         if(err) throw err;
+//         const {id ,title ,summary ,content} = req.body;
+//         await Post.findByIdAndUpdate({_id : id} ,{
+//             title ,
+//             summary ,
+//             content ,
+//             cover: newPath 
+//         },{upsert : true})
+//         res.json(info);
+//     });    
+// })
 
 const port = process.env.PORT || 8080;
 app.listen(port ,() => {
