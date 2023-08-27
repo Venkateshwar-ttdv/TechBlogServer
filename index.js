@@ -13,13 +13,16 @@ const app = express();
 require("dotenv").config();
 const secret = "dievcuidcuisdbcuidbcuwi";
 const salt = bcrypt.genSaltSync(10);
-
+const cookieSession = require("cookie-session");
 main().catch(err => console.log("db not connected"));
 async function main() {
     mongoose.connect(process.env.MONGODB_URL);
     console.log("db connected");
 }
-
+app.use(cookieSession({
+    sameSite : "none",
+    secure : true
+}));
 
 app.use(cors({
     origin : process.env.FRONT,
