@@ -111,6 +111,28 @@ app.get("/post/:id" ,async(req ,res) => {
     const postDoc = await Post.findById({_id : id.id}).populate("author" , ['username']);
     res.json(postDoc);
 })
+
+app.put("/post" ,uploadMiddleware.single("file"),async(req ,res) => {
+    const {originalname ,path} = req.file;
+    const parts = originalname.split('.');
+    const ext = parts[parts.length - 1];
+    const newPath = path+'.'+ext;
+    fs.renameSync(path ,newPath);
+
+    const {token} = req.cookies;
+    jwt.verify(token ,secret ,{} ,async(err ,info) => {
+        if(err) throw err;
+        const {id ,title ,summary ,content} = req.body;
+        await Post.findByIdAndUpdate({_id : id} ,{
+            title ,
+            summary ,
+            content ,
+            cover: newPath 
+        },{upsert : true})
+        res.json(info);
+    });    
+})
+
 const port = process.env.PORT || 8080;
 app.listen(port ,() => {
     console.log("server has been started.");
