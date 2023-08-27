@@ -13,17 +13,13 @@ const app = express();
 require("dotenv").config();
 const secret = "dievcuidcuisdbcuidbcuwi";
 const salt = bcrypt.genSaltSync(10);
-const cookieSession = require("cookie-session");
+
 main().catch(err => console.log("db not connected"));
 async function main() {
     mongoose.connect(process.env.MONGODB_URL);
     console.log("db connected");
 }
-app.use(cookieSession({
-    keys : ["key1"],
-    sameSite : "none",
-    secure : true
-}));
+
 
 app.use(cors({
     origin : process.env.FRONT,
@@ -58,7 +54,7 @@ app.post("/login" ,async(req ,res) => {
         if(passOk) {
             jwt.sign({username ,id : userDoc._id},secret ,{} ,(err ,token) => {
                 if(err) throw err;
-                   res.cookie('token' ,token).json({
+                   res.cookie('token' ,token,{sameSite : "none" ,secure}).json({
                    id : userDoc._id,
                    username
                 });
@@ -81,7 +77,7 @@ app.get("/profile" ,(req ,res) => {
 });
 
 app.post("/logout" ,(req ,res) => {
-    res.cookie("token" ,"").json("ok");
+    res.cookie("token" ,"",{sameSite : "none" ,secure}).json("ok");
 });
 
 app.post("/post" ,uploadMiddleware.single("file"),async(req ,res) => {
